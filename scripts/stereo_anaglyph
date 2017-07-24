@@ -2,19 +2,49 @@
 
 import sys
 import rospy
+from sensor_msgs.msg import Image
+import stereoanaglyph
+import PIL.Image
 
-def talker():
-    pub = rospy.Publisher('/helelani/stereo_anaglyph_chatter', String, queue_size=10)
+img_pub = None
+img_left = None
+img_right = None
+img_mask = 0
+
+def do_anaglyph():
+    global img_pub, img_left, img_right, img_mask
+    img_out = Image(encoding='rgb8')
+    pil_img = stereoanaglyph.Anaglyph(img_left, img_right)
+    img_out.width, img_out.height = pil_img.size
+    img_out.step = pil_img.size[0] * 3
+    img_out.data = [item for sublist in list(pil_img.getdata()) for item in sublist]
+    img_pub.publish(img_out)
+    img_mask = 0
+
+def left_callback(data):
+    global img_left, img_mask
+    img_left = PIL.Image.frombuffer('L', (data.width, data.height), data.data, 'raw', 'L', 0, 1)
+    img_mask |= 0x1
+    if img_mask & 0x3 == 0x3:
+        do_anaglyph()
+
+def right_callback(data):
+    global img_right, img_mask
+    img_right = PIL.Image.frombuffer('L', (data.width, data.height), data.data, 'raw', 'L', 0, 1)
+    img_mask |= 0x2
+    if img_mask & 0x3 == 0x3:
+        do_anaglyph()
+
+def node_entry():
+    global img_pub
     rospy.init_node('stereo_anaglyph', anonymous=True)
-    rate = rospy.Rate(10) # 10hz
-    while not rospy.is_shutdown():
-        hello_str = "hello world %s" % rospy.get_time()
-        rospy.loginfo(hello_str)
-        pub.publish(hello_str)
-        rate.sleep()
+    rospy.Subscriber('left_image_in', Image, left_callback)
+    rospy.Subscriber('right_image_in', Image, right_callback)
+    img_pub = rospy.Publisher('image_out', Image, queue_size=10)
+    rospy.spin()
 
 if __name__ == '__main__':
     try:
-        talker()
+        node_entry()
     except rospy.ROSInterruptException:
         pass

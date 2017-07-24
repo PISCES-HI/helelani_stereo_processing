@@ -1,12 +1,12 @@
 import cv2
 import numpy as np
 import yaml
-import sys
-
+import sys, os
 
 def stereocalib(side, img):
+    script_dir = os.path.dirname(__file__)
 
-    with open("stereocalibfinal.yaml", 'r') as stream:
+    with open(script_dir + "/stereocalibfinal.yaml", 'r') as stream:
         try:
             ster = yaml.load(stream)
             #print(poop)
@@ -20,7 +20,7 @@ def stereocalib(side, img):
     w_l = ster['w_l']
     h_l = ster['h_l']
 
-    with open("stereorectifyfinal.yaml", 'r') as stream:
+    with open(script_dir + "/stereorectifyfinal.yaml", 'r') as stream:
         try:
             rect = yaml.load(stream)
             

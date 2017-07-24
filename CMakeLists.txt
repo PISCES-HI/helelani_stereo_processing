@@ -9,7 +9,6 @@ find_package(catkin REQUIRED COMPONENTS rospy)
 ###################################
 
 catkin_package(
-  INCLUDE_DIRS src
   LIBRARIES helelani_client
   CATKIN_DEPENDS rospy std_msgs helelani_common
 )

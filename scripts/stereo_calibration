@@ -2,19 +2,28 @@
 
 import sys
 import rospy
+import ros_numpy
+from sensor_msgs.msg import Image
+import stereocalib
 
-def talker():
-    pub = rospy.Publisher('/helelani/stereo_calibration_chatter', String, queue_size=10)
+img_pub = None
+stereo_side = ''
+
+def callback(data):
+    img_in = ros_numpy.numpify(data)
+    img_out = ros_numpy.msgify(Image, stereocalib.stereocalib(stereo_side, img_in), 'mono8')
+    img_pub.publish(img_out)
+
+def node_entry():
+    global img_pub, stereo_side
+    stereo_side = sys.argv[1]
     rospy.init_node('stereo_calibration', anonymous=True)
-    rate = rospy.Rate(10) # 10hz
-    while not rospy.is_shutdown():
-        hello_str = "hello world %s" % rospy.get_time()
-        rospy.loginfo(hello_str)
-        pub.publish(hello_str)
-        rate.sleep()
+    rospy.Subscriber('image_in', Image, callback)
+    img_pub = rospy.Publisher('image_out', Image, queue_size=10)
+    rospy.spin()
 
 if __name__ == '__main__':
     try:
-        talker()
+        node_entry()
     except rospy.ROSInterruptException:
         pass
