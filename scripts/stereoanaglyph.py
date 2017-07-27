@@ -2,6 +2,7 @@
 from PIL import Image, ImageChops, ImageMath
 import math
 import sys
+import itertools
 from PIL import ImageOps
 from PIL.ImageOps import grayscale
 from PIL.ImageOps import colorize
@@ -19,9 +20,13 @@ def Anaglyph(imgl, imgr):
 	right = grayscale(right)
 	right = colorize(right, (0,0,0),(0,255,255))
 
-	anagimg = Image.blend(left,right,0.5)
+	list_out = []
+	for red, cyan in itertools.izip(list(left.getdata()), list(right.getdata())):
+		list_out.append(min(red[0], 255))
+		list_out.append(min(cyan[1], 255))
+		list_out.append(min(cyan[2], 255))
 
-	return anagimg
+	return list_out
 
 if __name__ == '__main__':
     imgind = 0

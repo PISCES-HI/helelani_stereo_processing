@@ -14,10 +14,9 @@ img_mask = 0
 def do_anaglyph():
     global img_pub, img_left, img_right, img_mask
     img_out = Image(encoding='rgb8')
-    pil_img = stereoanaglyph.Anaglyph(img_left, img_right)
-    img_out.width, img_out.height = pil_img.size
-    img_out.step = pil_img.size[0] * 3
-    img_out.data = [item for sublist in list(pil_img.getdata()) for item in sublist]
+    img_out.data = stereoanaglyph.Anaglyph(img_left, img_right)
+    img_out.width, img_out.height = img_left.size
+    img_out.step = img_left.size[0] * 3
     img_pub.publish(img_out)
     img_mask = 0
 
