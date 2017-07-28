@@ -15,10 +15,10 @@ def Anaglyph(imgl, imgr):
 	rightMap = right.load()
 
 	left = grayscale(left)
-	left = colorize(left, (0,0,0),(0,255,255))
+	left = colorize(left, (0,0,0),(255,0,0))
 
 	right = grayscale(right)
-	right = colorize(right, (0,0,0),(255,0,0))
+	right = colorize(right, (0,0,0),(0,255,255))
 
 	list_out = []
 	for red, cyan in itertools.izip(list(left.getdata()), list(right.getdata())):
