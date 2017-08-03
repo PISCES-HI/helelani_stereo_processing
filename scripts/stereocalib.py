@@ -33,13 +33,13 @@ def stereocalib(side, img):
 
     if side == 'left':
         
-            mapLx, mapLy = cv2.initUndistortRectifyMap(mtx_ll, dist_ll, R1, P1, (w_l, h_l), m1type = cv2.CV_32FC1)
+            mapLx, mapLy = cv2.initUndistortRectifyMap(mtx_ll, dist_ll, R1, P1, (2592, 1944), m1type = cv2.CV_32FC1)
             finall = cv2.remap(img, mapLx, mapLy,interpolation = cv2.INTER_LINEAR)
             return finall
         
     elif side == 'right':
         
-            mapRx, mapRy = cv2.initUndistortRectifyMap(mtx_rr, dist_rr, R2, P2, (w_l, h_l), m1type = cv2.CV_32FC1)#CV_16SC2,CV_32FC1
+            mapRx, mapRy = cv2.initUndistortRectifyMap(mtx_rr, dist_rr, R2, P2, (2592, 1944), m1type = cv2.CV_32FC1)#CV_16SC2,CV_32FC1
             finalr = cv2.remap(img, mapRx, mapRy,interpolation = cv2.INTER_LINEAR)
             return finalr
 
