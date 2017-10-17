@@ -16,10 +16,10 @@ def Anaglyph(imgl, imgr, angle):
 
 	if angle == 'parallel':
 		left = grayscale(left)
-		left = colorize(left, (0,0,0),(0,255,255))
+		#left = colorize(left, (0,0,0),(0,255,255))
 
 		right = grayscale(right)
-		right = colorize(right, (0,0,0),(255,0,0))
+		#right = colorize(right, (0,0,0),(255,0,0))
 
 	if angle == 'toedin':
 		left = grayscale(left)
@@ -30,9 +30,9 @@ def Anaglyph(imgl, imgr, angle):
 
 	list_out = []
 	for red, cyan in itertools.izip(list(left.getdata()), list(right.getdata())):
-		list_out.append(min(red[0], 255))
-		list_out.append(min(cyan[1], 255))
-		list_out.append(min(cyan[2], 255))
+		list_out.append(min(red, 255))
+		list_out.append(min(cyan, 255))
+		list_out.append(min(cyan, 255))
 
 	return list_out
 
